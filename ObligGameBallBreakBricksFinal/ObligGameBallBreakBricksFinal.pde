@@ -234,16 +234,16 @@ void ballHitPaddle()  {
   float paddleLeft = paddleX -paddleWidth/2;
   float paddleRight = paddleX +paddleWidth/2;
   
-  // Test if the ball is within the width of, and above the paddle
+  // Test if the ball is within the width of, and above, the paddle
   if (posx > paddleLeft && posx < paddleRight && posy >= paddleY -paddleHeight){
       posy = paddleY -paddleHeight;
       vely = -vely;
-  } else ballLife();
+  }
 }
 
 
 /*
-  Function to draw multiple bricks
+  Function tocreate the bricks
 */
 void createBricks()  {
   for(int x = 0; x < rectX.length; x++)  {
@@ -259,7 +259,7 @@ void createBricks()  {
 
 
 /*
-  Function to draw bricks
+  Function to draw the bricks
 */
 void drawBricks()  {
   int brickCounter = 0;
@@ -272,26 +272,34 @@ void drawBricks()  {
       }
       brickCounter++;
     }
-  }
-  
+  }  
 }
 
 
 /*
-  Function to detect collision between ball and bricks
+  Function to 
+  - detect collision between ball and bricks
+  - remove bricks that are hit 
+  - change the balls direction when it hits a ball
 */
 void ballHitBricks()  {
-  int brickCounter = 0;
-    for(int x = 0; x < rectX.length; x++)  {
-      for(int y = 0; y < rectY.length; y++)  {
-        if(visible[brickCounter])  {
-          //check if the ball collides with bricks
+  int brickCounter = 0;  // Counting each brick
+    boolean switchedX = false;  // Making sure the ball only change direction once even if it hits more than one brick.
+    boolean switchedY = false;  // Making sure the ball only change direction once even if it hits more than one brick.
+    for(int x = 0; x < rectX.length; x++)  {  // Going through the x-array
+      for(int y = 0; y < rectY.length; y++)  {  // Going through the y-array
+        if(visible[brickCounter])  {  // if that given brick is visible, detect collision
+          //check if the ball collides with any bricks
           if (posx + size > rectX[x] && posx < rectX[x] + brickSize && posy + size > rectY[y] && posy < rectY[y] + brickSize)  {
+            if(posy + size > rectY[y] && posy <= rectY[y] + brickSize && switchedY != true)  {
+              vely = -vely;
+              switchedY = true;
+            }
+            if(posx + size > rectX[x] && posx <= rectX[x] + brickSize && switchedX != true)  {
+              velx = -velx;       
+              switchedX = true;
+            } 
             visible[brickCounter] = false;
-            if(posx + size > rectX[x] && posx < rectX[x] + brickSize)  {
-              velx = -velx;
-//              vely = -vely;
-            } //else vely = -vely;
           }
         }
         brickCounter++;
@@ -299,46 +307,10 @@ void ballHitBricks()  {
     }
 }
 
-/*
-5. Implement collision detection between rectangles and the ball. For now, just make the rectangles vanish if the ball hits them.  You need a global variable
-
-bool visible[]  - set all to be true in setup when you start. encodes if a rectangle is vanished or not.
-
-when you draw them:
-
-for(int i = 0; i < numRectangles; i++) {
-   if(visible[i]) {
-        // draw the rectangle
-   }
-   
-      
-  for (int i = 0; i < rectX; i++){
-    for (int j = 0; j < rectY; j++)  {
-      bricks[i][j] = 0;
-    }
-  }
-*/
-
 
 /*
-  Making the game shut down if the ball falls out of the window
+  Making the game shut down if the ball falls below the window
 */
 void gameOver()  {
      exit();
 }
-
-/*
-void draw() {
-
-  if(answer == 1) draw1();
-  else if(answer == 2) draw2();
-
-}
-
-void keyPressed() {
-  if(keyCode == 32) {
-    answer += 1;
-    if(answer > 2) answer = 1;
-  } 
-}
-*/
